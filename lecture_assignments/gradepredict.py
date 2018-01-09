@@ -11,6 +11,8 @@
 #Final Projects     : 1
 #Total points       : 1560
 
+import csv
+import sys
 #
 #param:
 #returns: 
@@ -45,7 +47,10 @@ def calculate_project_score(project_scores):
 #params: an int representing total points earned
 #return a float representing a percentage between [0,1]
 def convert_to_percent(total_points):
-	return total_points/1560
+	#return total_points/1560
+	pass
 
+#params: a percent between 0 and 1
+#return a letter grade value
 def convert_to_letter_grade(percent):
-
+	pass
