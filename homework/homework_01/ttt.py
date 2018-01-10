@@ -24,6 +24,35 @@ def print_board(current_board):
 			print ("---------")
 	print("\n")
 
+def make_move(current_board, move, player):
+	token = " "
+	if player == 1:
+		token = "X"
+	else:
+		token = "O"
+	#row 1
+	if move == 'NW':
+		current_board[0][0] = token
+	if move == 'NE':
+		current_board[0][2] = token
+	if move == 'N':
+		current_board[0][1] = token
+	#row 2
+	if move == "W":
+		current_board[1][0] = token
+	if move =="C":
+		current_board[1][1] = token
+	if move == "E":
+		current_board[1][2] = token
+
+	#row 3
+	if move == "SW":
+		current_board[2][0] = token
+	if move == "S":
+		current_board[2][1] = token
+	if move == "SE":
+		current_board[2][2] = token
+
 
 #returns true if there is a three in a row anywhere on the board
 #params: list of lists of tuples represinting the board
@@ -39,6 +68,9 @@ def check_three_in_a_row(current_board):
 		return True
 	
 	elif current_board[2][0] == current_board[1][1] and current_board[1][1] == current_board[0][2] and current_board[2][0] != " ":
+		return True
+	#check if third column has a win
+	elif current_board[2][2] == current_board[1][2] and current_board[1][2] == current_board[0][2]:
 		return True
 
 	return False
@@ -78,7 +110,7 @@ def is_valid_move(current_board, input):
 	
 	return True
 
-
+#def make_move(current_board, )
 def __main__():
 	#print_board(board)
 	#print(check_three_in_a_row(board))
@@ -86,11 +118,44 @@ def __main__():
 	#print(is_valid_move(board, 'NE'))
 	game_over = False
 	# player 1 represents X, player 2 represents O
-	current_player = 1
-	next_player = 2
-	while game_over = False:
-		print_board(board)
+	ai_mode = 0
+	ai_mode = input("press 1 to play against AI\npress 2 to play against another human: \n> ")
+	if ai_mode == '1':
+		print("coming soon!!!")
+	if ai_mode == '2':
+		current_player = 1
+		next_player = 2
+		while game_over == False:
+			print("\n\n\n")
+			print_board(board)
+			if(current_player == 1):
+				move = input("X's move > ").upper()
+				while not is_valid_move(board, move):
+					print("Sorry that's an invalid move!")
+					move = input("X's move > ").upper()
+				current_player = next_player
+				next_player = 1
 
+			elif(current_player == 2):
+				move = input("O's move > ").upper()
+				while not is_valid_move(board, move):
+					print("Sorry that's an invalid move!")
+					move = input("O's move > ").upper()
+				current_player = next_player
+				next_player = 2
+
+			make_move(board, move, next_player)
+
+			if check_board_full(board):
+				print("Tie!!!")
+				game_over = True
+
+			if check_three_in_a_row(board):
+				if current_player == 2:
+					print("X wins!!!")
+				else:
+					print("O wins!!!")
+				game_over = True
 
 if __name__ == "__main__":
     __main__()
