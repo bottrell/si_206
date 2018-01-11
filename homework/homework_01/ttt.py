@@ -23,4 +23,3 @@ def check_board_full(current_board):
 #		2) user's input is a valid direction
 def is_valid_move(current_board, input):
 	pass
-
