@@ -200,33 +200,38 @@ def test():
   else:
     print('TEST 2.4 failed')
 
-  #calculate project score, calculate midterm score
-  projects = [200,200,200]
-  expected_project = 600
-  if calculate_project_score(projects) == expected_project:
-    print('TEST 3.1 passed')
-  else:
-    print('TEST 3.1 failed')
 
-  midterms = [100,100]
-  expected_midterms = 200
-  if calculate_midterm_score(midterms) == expected_midterms:
-    print('TEST 3.2 passed')
+  ## TEST 3: Create grade_dict from file
+  TEST_FILENAME = DEFAULT_FILENAME
+  grade_dict = get_data(TEST_FILENAME)
+  if (HOMEWORKS_KEY in grade_dict and
+      LECTURES_KEY in grade_dict and
+      DISCUSSIONS_KEY in grade_dict and
+      MIDTERMS_KEY in grade_dict and
+      PROJECTS_KEY in grade_dict and
+      FINAL_KEY in grade_dict):
+    print ('TEST 3 passed')
   else:
-    print('TEST 3.2 failed')
+    print ('TEST 3 failed')
+
+  ## TEST 4: Check score lists
+  if (len(grade_dict[HOMEWORKS_KEY]) == 14 and
+      len(grade_dict[LECTURES_KEY]) == 26):
+    print ('TEST 3 passed')
+  else:
+    print ('TEST 3 failed')
 
 
 ##################
 ## MAIN Program ##
 ##################
 
-testing = True
+testing = False
 
 # run this until all tests pass, then set testing=False
 if (testing):
   test()
   exit()
-
 
 grade_dict = get_data(DEFAULT_FILENAME)
 total_score = 0

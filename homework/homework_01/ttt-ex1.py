@@ -205,6 +205,59 @@ def player_vs_player():
 					print("O wins!!!")
 				game_over = True
 
+def ai_vs_ai():
+	ai_moves = {
+					1 : "NW",
+					2 : "N",
+					3 : "NE",
+					4 : "W",
+					5 : "C",
+					6 : "E",
+					7 : "SW",
+					8 : "S",
+					9 : "SE"
+				}
+
+	game_over = False
+	current_player = 1
+	next_player = 2
+	while game_over == False:
+		print_board(board)
+		
+		if(current_player == 1):
+			move = ai_moves[random.randint(1,9)]
+			
+			while not is_valid_move(board, move):
+				move = ai_moves[random.randint(1,9)]
+			
+			current_player = next_player
+			next_player = 1
+
+		elif current_player == 2:
+			move = ai_moves[random.randint(1,9)]
+			
+			while not is_valid_move(board, move):
+				move = ai_moves[random.randint(1,9)]
+			
+			current_player = next_player
+			next_player = 2
+
+		make_move(board, move, next_player)
+
+		if check_board_full(board):
+			print_board(board)
+			print("Tie!!!")
+			game_over = True
+
+		if check_three_in_a_row(board):
+			print_board(board)
+			if current_player == 2:
+				print("AI 1 wins!!!")
+			else:
+				print("AI 2 wins!!!")
+			game_over = True
+
+
 #def make_move(current_board, )
 def __main__():
 	#print_board(board)
@@ -213,11 +266,13 @@ def __main__():
 	#print(is_valid_move(board, 'NE'))
 	# player 1 represents X, player 2 represents O
 	ai_mode = 0
-	ai_mode = input("press 1 to play against AI\npress 2 to play against another human: \n> ")
+	ai_mode = input("press 1 to play against AI\npress 2 to play against another human: \npress 3 for AI vs AI game \n> ")
 	if ai_mode == '1':
 		player_vs_ai()
 	if ai_mode == '2':
 		player_vs_player()
+	if ai_mode == '3':
+		ai_vs_ai()
 
 if __name__ == "__main__":
     __main__()

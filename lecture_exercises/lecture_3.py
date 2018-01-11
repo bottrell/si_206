@@ -4,7 +4,3 @@
 #usability testing
 #stress testing
 
-
-#def best_two_keys(dict):
-	#pass
-
