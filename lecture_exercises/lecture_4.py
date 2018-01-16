@@ -14,3 +14,12 @@ class TestMyCode(unittest.TestCase):
 #fail() statement will fail upon reaching
 #add unittest.main() to actually run the previously defined tests
 unittest.main()
+
+#python try/ except blocks
+try:
+	print("try")
+	self.fail()
+except
+	print("except")
+
+#self.assertRaises(ValueError, best_two_keys, dict2)
