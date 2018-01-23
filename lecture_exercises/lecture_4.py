@@ -23,3 +23,13 @@ except
 	print("except")
 
 #self.assertRaises(ValueError, best_two_keys, dict2)
+#running with --verbose will give more error output
+
+#want to make sure that tests don't impact the way the program runs
+#can fix this with setUp and tearDown
+
+def tearDown(self):
+	pass
+
+def setUp(self):
+	pass

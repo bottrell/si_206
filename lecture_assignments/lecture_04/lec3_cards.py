@@ -42,11 +42,16 @@ class Deck(object):
         random.shuffle(self.cards)
 
     def replace_card(self, card):
-        card_strs = [] # forming an empty list
-        for c in self.cards: # each card in self.cards (the initial list)
-            card_strs.append(c.__str__()) # appends the string that represents that card to the empty list
-        if card.__str__() not in card_strs: # if the string representing this card is not in the list already
-            self.cards.append(card) # append it to the list
+        card_strs = [] 
+        # forming an empty list
+        for c in self.cards: 
+        # each card in self.cards (the initial list)
+            card_strs.append(c.__str__()) 
+            # appends the string that represents that card to the empty list
+        if card.__str__() not in card_strs:
+         # if the string representing this card is not in the list already
+            self.cards.append(card) 
+            # append it to the list
 
     def sort_cards(self):
         self.cards = []
@@ -64,7 +69,7 @@ class Deck(object):
 
 # A silly function, but it does kind of work to play a game.
 # Because it's written in a silly way, there are a bunch of edge cases of sorts.
-def play_war_game(testing=False):
+def play_war_game(testing=True):
     # Call this with testing = True and it won't print out all the game mechanics, which makes it easier to see tests.
     player1 = Deck()
     player2 = Deck()
@@ -120,7 +125,62 @@ if __name__ == "__main__":
 ##### IMPLEMENT UNIT TESTS HERE ####
 
 class TestCard(unittest.TestCase):
-    pass
+    def test_init(self):
+        c1 = Card(0,1)
+        c2 = Card(2,11)
 
+        self.assertEqual(c1.suit, "Diamonds")
+        self.assertEqual(c1.rank_num, 1)
+        self.assertEqual(c2.suit, "Hearts")
+        self.assertEqual(c2.rank_num, 11)
+#write tests that:
+#   test the deck is the right size
+#   test that pop_card() works as specified
+#   test that replace_card() works as specified
+#   test that shuffle() and sort_cards() works as specified
 class TestDeck(unittest.TestCase):
-    pass
+    
+    def test_size(self):
+        D1 = Deck()
+        self.assertEqual(len(D1.cards), 52)
+
+    def test_pop(self):
+        D1 = Deck()
+        card = D1.pop_card()
+        self.assertEqual(card.__str__(), "13 of Spades")
+        card2 = D1.pop_card()
+        self.assertEqual(card2.__str__(), "12 of Spades")
+   
+    def test_replace(self):
+        D1 = Deck()
+        card = Card(0,1)
+        card2 = Card(3,13)
+        for x in range(52):
+            D1.pop_card()
+
+        self.assertEqual(len(D1.cards), 0)
+        D1.replace_card(card)
+        self.assertTrue(card in D1.cards)
+        self.assertEqual(len(D1.cards),1)
+        D1.replace_card(card2)
+        self.assertTrue(card2 in D1.cards)
+
+    def test_shuffle(self):
+        D1 = Deck()
+        self.assertTrue(len(D1.cards),52)
+        card = D1.cards[13]
+        D1.shuffle()
+        self.assertTrue(len(D1.cards),52)
+        card_compare = D1.cards[13]
+        self.assertNotEqual(card, card_compare)
+
+    def test_sort(self):
+        D1 = Deck()
+        D1.shuffle()
+        deck_1_cards = D1.cards
+        D2 = Deck()
+        deck_2_cards = D2.cards
+        self.assertNotEqual(deck_1_cards, deck_2_cards)
+
+
+unittest.main()
