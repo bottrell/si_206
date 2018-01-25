@@ -38,11 +38,12 @@ json_string = """{
 }"""
 
 class Media(object):
-	def __init__(self, title="No Title", author="No Author", release_year = 2018, json = None):
+	def __init__(self, title="No Title", author="No Author", release_year = 2018, json = None, link = "itunes.com"):
 		if json == None:
 			self.title = title
 			self.author = author
 			self.release_year = release_year
+			self.link = link
 		else:
 			self.title = json["trackName"]
 			self.author = json["artistName"]
@@ -57,7 +58,7 @@ class Media(object):
 		return 0
 
 class Song(Media):
-	def __init__(self, title ="No Title", author="No Author", release_year = 2018, genre = "None", track_length = 0, album = "No Album", json = None):
+	def __init__(self, title ="No Title", author="No Author", release_year = 2018, genre = "None", track_length = 0, album = "No Album", json = None, link = "itunes.com"):
 		if json == None:
 			super().__init__(title, author, release_year)
 			self.genre = genre
@@ -77,7 +78,7 @@ class Song(Media):
 		return self.track_length
 
 class Movie(Media):
-	def __init__(self, title="No Title", author="No Author", release_year = 2018, movie_length = 0, rating = "PG", json = None):
+	def __init__(self, title="No Title", author="No Author", release_year = 2018, movie_length = 0, rating = "PG", json = None, link = "itunes.com"):
 		if json == None:
 			super().__init__(title, author, release_year)
 			self.movie_length = movie_length
@@ -135,25 +136,34 @@ def main(last_query = None):
 
 	print("\nSONGS")
 	count = 1
-	for song in songs:
-		song.number = count
-		print(count, end = " ")
-		count += 1
-		print(song)
+	if len(songs) == 0:
+		print("No songs found!")
+	else:
+		for song in songs:
+			song.number = count
+			print(count, end = " ")
+			count += 1
+			print(song)
 	print("\n")
 	print("MOVIES")
-	for movie in movies:
-		movie.number = count
-		print(count, end = " ")
-		count += 1
-		print(movie)
+	if len(movies) == 0:
+		print("No movies found!")
+	else:
+		for movie in movies:
+			movie.number = count
+			print(count, end = " ")
+			count += 1
+			print(movie)
 	print("\n")
 	print("OTHER MEDIA")
-	for media in other_media:
-		media.number = count
-		print(count, end = " ")
-		count += 1
-		print(media)
+	if len(other_media) == 0 :
+		print("No other media found!")
+	else:
+		for media in other_media:
+			media.number = count
+			print(count, end = " ")
+			count += 1
+			print(media)
 	user_input = input("\nEnter a number for more info, or another search term, or exit: ")
 	if user_input == 'exit':
 		print("\nBye!")
@@ -164,21 +174,21 @@ def main(last_query = None):
 			print("\n")
 			print("Launching")
 			print(x.link)
-			print("in web browser...")
+			print("in web browser...\n")
 			webbrowser.open(x.link)
 	for x in movies:
 		if x.number == int(user_input):
 			print("\n")
 			print("Launching")
 			print(x.link)
-			print("in web browser...")
+			print("in web browser...\n")
 			webbrowser.open(x.link)
 	for x in other_media:
 		if x.number == int(user_input):
 			print("\n")
 			print("Launching")
 			print(x.link)
-			print("in web browser...")
+			print("in web browser...\n")
 			webbrowser.open(x.link)
 
 	main()
