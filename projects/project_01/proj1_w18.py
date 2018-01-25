@@ -119,6 +119,7 @@ def main(last_query = None):
 	songs = []
 	other_media = []
 	if user_query.lower() == "exit":
+		print("\nBye!")
 		return
 	else:
 		base_url = "https://itunes.apple.com/search?term="
@@ -126,13 +127,17 @@ def main(last_query = None):
 		full_url = base_url + user_query
 		itunes_result = requests.get(full_url)
 		itunes_object = json.loads(itunes_result.text)
-		for result in itunes_object["results"]:
-			if result["kind"] == "song":
-				songs.append(Song(json = result))
-			elif result["kind"] == "feature-movie":
-				movies.append(Movie(json = result))
-			else:
-				other_media.append(Media(json = result))
+		try:
+			for result in itunes_object["results"]:
+				if result["kind"] == "song":
+					songs.append(Song(json = result))
+				elif result["kind"] == "feature-movie":
+					movies.append(Movie(json = result))
+				else:
+					other_media.append(Media(json = result))
+		except:
+			print("\nAn Error occurred!!! Restarting...\n")
+			main()
 
 	print("\nSONGS")
 	count = 1
@@ -167,31 +172,32 @@ def main(last_query = None):
 	user_input = input("\nEnter a number for more info, or another search term, or exit: ")
 	if user_input == 'exit':
 		print("\nBye!")
-		return
+		exit()
 	
-	for x in songs:
-		if x.number == int(user_input):
-			print("\n")
-			print("Launching")
-			print(x.link)
-			print("in web browser...\n")
-			webbrowser.open(x.link)
-	for x in movies:
-		if x.number == int(user_input):
-			print("\n")
-			print("Launching")
-			print(x.link)
-			print("in web browser...\n")
-			webbrowser.open(x.link)
-	for x in other_media:
-		if x.number == int(user_input):
-			print("\n")
-			print("Launching")
-			print(x.link)
-			print("in web browser...\n")
-			webbrowser.open(x.link)
-
-	main()
+	try:
+		for x in songs:
+			if x.number == int(user_input):
+				print("\n")
+				print("Launching")
+				print(x.link)
+				print("in web browser...\n")
+				webbrowser.open(x.link)
+		for x in movies:
+			if x.number == int(user_input):
+				print("\n")
+				print("Launching")
+				print(x.link)
+				print("in web browser...\n")
+				webbrowser.open(x.link)
+		for x in other_media:
+			if x.number == int(user_input):
+				print("\n")
+				print("Launching")
+				print(x.link)
+				print("in web browser...\n")
+				webbrowser.open(x.link)
+	except:
+		main(user_input)
 
 if __name__ == "__main__":
 	# your control code for Part 4 (interactive search) should go here
