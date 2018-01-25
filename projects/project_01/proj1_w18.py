@@ -47,6 +47,7 @@ class Media(object):
 			self.title = json["trackName"]
 			self.author = json["artistName"]
 			self.release_year = json["releaseDate"][:4]
+			self.link = json["previewUrl"]
 
 	def __str__(self):
 		return "{} by {} ({})".format(self.title, self.author, self.release_year)
