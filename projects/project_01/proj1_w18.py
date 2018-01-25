@@ -48,6 +48,7 @@ class Media(object):
 			self.author = json["artistName"]
 			self.release_year = json["releaseDate"][:4]
 			self.link = json["previewUrl"]
+			self.number = 0
 
 	def __str__(self):
 		return "{} by {} ({})".format(self.title, self.author, self.release_year)
@@ -108,8 +109,11 @@ print(jaws.release_year)
 print(jaws.movie_length)
 print(jaws.rating)
 '''
-def main():
-	user_query = input('Enter a search term, or "exit" to quit: ')
+def main(last_query = None):
+	if last_query != None:
+		user_query = last_query
+	else:
+		user_query = input('Enter a search term, or "exit" to quit: ')
 	movies = []
 	songs = []
 	other_media = []
@@ -132,21 +136,53 @@ def main():
 	print("\nSONGS")
 	count = 1
 	for song in songs:
+		song.number = count
 		print(count, end = " ")
 		count += 1
 		print(song)
 	print("\n")
 	print("MOVIES")
 	for movie in movies:
+		movie.number = count
 		print(count, end = " ")
 		count += 1
 		print(movie)
 	print("\n")
 	print("OTHER MEDIA")
 	for media in other_media:
+		media.number = count
 		print(count, end = " ")
 		count += 1
 		print(media)
+	user_input = input("\nEnter a number for more info, or another search term, or exit: ")
+	if user_input == 'exit':
+		print("\nBye!")
+		return
+	
+	for x in songs:
+		if x.number == int(user_input):
+			print("\n")
+			print("Launching")
+			print(x.link)
+			print("in web browser...")
+			webbrowser.open(x.link)
+	for x in movies:
+		if x.number == int(user_input):
+			print("\n")
+			print("Launching")
+			print(x.link)
+			print("in web browser...")
+			webbrowser.open(x.link)
+	for x in other_media:
+		if x.number == int(user_input):
+			print("\n")
+			print("Launching")
+			print(x.link)
+			print("in web browser...")
+			webbrowser.open(x.link)
+
+	main()
+
 if __name__ == "__main__":
 	# your control code for Part 4 (interactive search) should go here
 	main()
