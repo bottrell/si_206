@@ -45,10 +45,16 @@ class Media(object):
 			self.release_year = release_year
 			self.link = link
 		else:
-			self.title = json["trackName"]
+			try:
+				self.title = json["trackName"]
+			except:
+				self.title = json["collectionName"]
 			self.author = json["artistName"]
 			self.release_year = json["releaseDate"][:4]
-			self.link = json["previewUrl"]
+			try:
+				self.link = json["previewUrl"]
+			except:
+				self.link = json["trackViewUrl"]
 			self.number = 0
 
 	def __str__(self):
@@ -87,7 +93,10 @@ class Movie(Media):
 			super().__init__(title, author, release_year, json)
 			seconds = json["trackTimeMillis"] / 1000
 			self.movie_length = round((seconds / 60) )
-			self.rating = json["contentAdvisoryRating"]
+			try:
+				self.rating = json["contentAdvisoryRating"]
+			except:
+				self.rating = rating
 
 	def __str__(self):
 		return super().__str__() + "[" + self.rating + "]"
@@ -129,15 +138,21 @@ def main(last_query = None):
 		itunes_object = json.loads(itunes_result.text)
 		try:
 			for result in itunes_object["results"]:
-				if result["kind"] == "song":
-					songs.append(Song(json = result))
-				elif result["kind"] == "feature-movie":
-					movies.append(Movie(json = result))
+				if "kind" in result:
+					if result["kind"] == "song":
+						songs.append(Song(json = result))
+					elif result["kind"] == "feature-movie":
+						movies.append(Movie(json = result))
+					else:
+						other_media.append(Media(json = result))
 				else:
 					other_media.append(Media(json = result))
+					#print(result)
+
 		except:
-			print("\nAn Error occurred!!! Restarting...\n")
+			print("\nAn error occured! Restarting...\n")
 			main()
+
 
 	print("\nSONGS")
 	count = 1
@@ -163,6 +178,7 @@ def main(last_query = None):
 	print("OTHER MEDIA")
 	if len(other_media) == 0 :
 		print("No other media found!")
+
 	else:
 		for media in other_media:
 			media.number = count
@@ -196,6 +212,7 @@ def main(last_query = None):
 				print(x.link)
 				print("in web browser...\n")
 				webbrowser.open(x.link)
+		main()
 	except:
 		main(user_input)
 
