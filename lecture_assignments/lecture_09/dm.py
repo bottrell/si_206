@@ -8,14 +8,14 @@ def get_rhymes_from_datamuse(rhymes_with):
     params_diction = {}
     params_diction["rel_rhy"] = rhymes_with
     response = requests.get(baseurl, params_diction)
-    return response.json()
+    return response.json() #returns a list of dictionaries
 
 # extract just the words from the data structures returned by datamuse
 def get_word_list(data_muse_word_list):
     words = []
     for word_dict in data_muse_word_list:
         words.append(word_dict['word'])
-    return words
+    return words #
 
 # print up to 'max_rhymes' words that rhyme with 'word'
 def print_rhymes(word, max_rhymes=10):
