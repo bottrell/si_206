@@ -91,8 +91,11 @@ class Movie(Media):
 			self.rating = rating
 		else:
 			super().__init__(title, author, release_year, json)
-			seconds = json["trackTimeMillis"] / 1000
-			self.movie_length = round((seconds / 60) )
+			try:
+				seconds = json["trackTimeMillis"] / 1000
+				self.movie_length = round((seconds / 60) )
+			except:
+				self.movie_length = 0
 			try:
 				self.rating = json["contentAdvisoryRating"]
 			except:

@@ -1,9 +1,11 @@
 import unittest
+import json
+import requests
 import proj1_w18 as proj1
 
 class TestMedia(unittest.TestCase):
 
-''' ------------ TESTS FOR PART 1 ------------'''
+# ------------ TESTS FOR PART 1 ------------
     def testConstructor(self):
         m1 = proj1.Media()
         m2 = proj1.Media("1999", "Prince")
@@ -140,44 +142,229 @@ class TestMedia(unittest.TestCase):
         self.assertEqual(movie6.rating, "PG-13")
 
     def test_str(self):
-        pass
+        #Testing __str__ method of media
+        m1 = proj1.Media()
+        self.assertEqual(m1.__str__(), "No Title by No Author (2018)")
+        m2 = proj1.Media("Paper Towns", "John Green", 2013)
+        self.assertEqual(m2.__str__(), "Paper Towns by John Green (2013)")
+        m3 = proj1.Media("Short Film", "Pixar")
+        self.assertEqual(m3.__str__(), "Short Film by Pixar (2018)")
+        #Testing __str__ method of Song
+
+        #Testing __str__ method of Movie
 
     def test_len(self):
-        pass
+        #testing __len__ method of media
+        media = proj1.Media()
+        self.assertEqual(media.__len__(), 0)
+        #Testing __len__ method of Song
+        song = proj1.Song()
+        self.assertEqual(song.__len__(), 0)
+        song2 = proj1.Song(track_length = 1000)
+        self.assertEqual(song2.__len__(), 1000)
+        #Testing __len__ method of Movie
+        movie = proj1.Movie()
+        self.assertEqual(movie.__len__(), 0)
+        movie2 = proj1.Movie(movie_length = 134000)
+        self.assertEqual(movie2.__len__(), 134000)
 
     def test_movie_has_no_genre(self):
-        pass
+        movie = proj1.Movie()
+        self.assertTrue(not isinstance(movie, proj1.Song))
 
     def test_song_has_no_movie_length(self):
-        pass
-
-    def test_movie_has_no_track_length(self):
-        pass
+        song = proj1.Song()
+        self.assertTrue(not isinstance(song, proj1.Movie))
 
     def test_media_song_has_no_rating(self):
-        pass
+        media = proj1.Media()
+        self.assertTrue(not isinstance(media, proj1.Movie))
 
-''' ------------ TESTS FOR PART 2 ------------'''
+# ------------ TESTS FOR PART 2 ------------
+    
 
     def test_json_Media(self):
-        pass
+        JSON_FILENAME = "sample_json.txt"
+        f = open(JSON_FILENAME, 'r')
+        dics = []
+        i = 0
+        for dic in f:
+            dics.append(json.loads(dic))
+            #print(dics[i], end = "\n\n\n\n\n\n\n\n")
+            i += 1
+        request = dics[-1]
+        m1 = proj1.Media(json = request)
+        f.close()
+        
+        self.assertEqual(m1.title, "Bridget Jones's Diary (Unabridged)")
+        self.assertEqual(m1.author, "Helen Fielding")
+        self.assertEqual(m1.release_year, '2012')
+        self.assertEqual(m1.__str__(), "Bridget Jones's Diary (Unabridged) by Helen Fielding (2012)")
+        self.assertEqual(m1.__len__(), 0)
 
     def test_json_Song(self):
-        pass
+        JSON_FILENAME = "sample_json.txt"
+        f = open(JSON_FILENAME, 'r')
+        dics = []
+        i = 0
+        for dic in f:
+            dics.append(json.loads(dic))
+            #print(dics[i], end = "\n\n\n\n\n\n\n\n")
+            i += 1
+        request = dics[-2]
+        s1 = proj1.Song(json = request)
+        f.close()
+
+        self.assertEqual(s1.title,"Hey Jude")
+        self.assertEqual(s1.track_length, 431.333)
+        self.assertEqual(s1.album, "TheBeatles 1967-1970 (The Blue Album)")
+        self.assertEqual(s1.genre, "Rock")
+        self.assertEqual(s1.__len__(), 431.333)
+        self.assertEqual(s1.__str__(), "Hey Jude by The Beatles (1968)[Rock]")
 
     def test_json_Movie(self):
-        pass
+        JSON_FILENAME = "sample_json.txt"
+        f = open(JSON_FILENAME, 'r')
+        dics = []
+        i = 0
+        for dic in f:
+            dics.append(json.loads(dic))
+            #print(dics[i], end = "\n\n\n\n\n\n\n\n")
+            i += 1
+        request = dics[-3]
+        movie1 = proj1.Movie(json = request)
+        f.close()
 
-''' ------------ TESTS FOR PART 3 ------------'''
+        self.assertEqual(movie1.rating,"PG")
+        self.assertEqual(movie1.release_year, '1975')
+        self.assertEqual(movie1.movie_length, 124)
+        self.assertEqual(movie1.__len__(), 124)
+        self.assertEqual(movie1.__str__(), "Jaws by Steven Spielberg (1975)[PG]")
+
+# ------------ TESTS FOR PART 3 ------------
 
     def test_nonsense(self):
-        pass
+        user_query = ""
+        movies = []
+        songs = []
+        other_media = []
+    
+        base_url = "https://itunes.apple.com/search?term="
+        user_query = user_query.replace(" ", "+")
+        full_url = base_url + user_query
+        itunes_result = requests.get(full_url)
+        itunes_object = json.loads(itunes_result.text)
+        for result in itunes_object["results"]:
+            if "kind" in result:
+                if result["kind"] == "song":
+                    songs.append(proj1.Song(json = result))
+                elif result["kind"] == "feature-movie":
+                    movies.append(proj1.Movie(json = result))
+                else:
+                    other_media.append(proj1.Media(json = result))
+            else:
+                other_media.append(proj1.Media(json = result))
+        self.assertTrue(movies == [])
+        self.assertTrue(songs == [])
+        self.assertTrue(songs == [])
+
+        user_query = "*&^%()"
+        movies = []
+        songs = []
+        other_media = []
+    
+        base_url = "https://itunes.apple.com/search?term="
+        user_query = user_query.replace(" ", "+")
+        full_url = base_url + user_query
+        itunes_result = requests.get(full_url)
+        itunes_object = json.loads(itunes_result.text)
+        for result in itunes_object["results"]:
+            if "kind" in result:
+                if result["kind"] == "song":
+                    songs.append(proj1.Song(json = result))
+                elif result["kind"] == "feature-movie":
+                    movies.append(proj1.Movie(json = result))
+                else:
+                    other_media.append(proj1.Media(json = result))
+            else:
+                other_media.append(proj1.Media(json = result))
+        self.assertTrue(movies != [])
+        self.assertTrue(songs != [])
+        self.assertTrue(songs != [])
 
     def test_specifics(self):
-        pass
+        user_query = "Moana"
+        movies = []
+        songs = []
+        other_media = []
+    
+        base_url = "https://itunes.apple.com/search?term="
+        user_query = user_query.replace(" ", "+")
+        full_url = base_url + user_query
+        itunes_result = requests.get(full_url)
+        itunes_object = json.loads(itunes_result.text)
+        for result in itunes_object["results"]:
+            if "kind" in result:
+                if result["kind"] == "song":
+                    songs.append(proj1.Song(json = result))
+                elif result["kind"] == "feature-movie":
+                    movies.append(proj1.Movie(json = result))
+                else:
+                    other_media.append(proj1.Media(json = result))
+            else:
+                other_media.append(proj1.Media(json = result))
+        self.assertTrue(movies != [])
+        self.assertTrue(songs != [])
+        self.assertTrue(songs != [])
 
     def test_categories(self):
-        pass
+        user_query = "love"
+        movies = []
+        songs = []
+        other_media = []
+    
+        base_url = "https://itunes.apple.com/search?term="
+        user_query = user_query.replace(" ", "+")
+        full_url = base_url + user_query
+        itunes_result = requests.get(full_url)
+        itunes_object = json.loads(itunes_result.text)
+        for result in itunes_object["results"]:
+            if "kind" in result:
+                if result["kind"] == "song":
+                    songs.append(proj1.Song(json = result))
+                elif result["kind"] == "feature-movie":
+                    movies.append(proj1.Movie(json = result))
+                else:
+                    other_media.append(proj1.Media(json = result))
+            else:
+                other_media.append(proj1.Media(json = result))
+        self.assertTrue(movies != [])
+        self.assertTrue(songs != [])
+        self.assertTrue(songs != [])
+
+        user_query = ""
+        movies = []
+        songs = []
+        other_media = []
+    
+        base_url = "https://itunes.apple.com/search?term="
+        user_query = user_query.replace(" ", "+")
+        full_url = base_url + user_query
+        itunes_result = requests.get(full_url)
+        itunes_object = json.loads(itunes_result.text)
+        for result in itunes_object["results"]:
+            if "kind" in result:
+                if result["kind"] == "song":
+                    songs.append(proj1.Song(json = result))
+                elif result["kind"] == "feature-movie":
+                    movies.append(proj1.Movie(json = result))
+                else:
+                    other_media.append(proj1.Media(json = result))
+            else:
+                other_media.append(proj1.Media(json = result))
+        self.assertTrue(movies == [])
+        self.assertTrue(songs == [])
+        self.assertTrue(songs == [])
 
 
 unittest.main()
