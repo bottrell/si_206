@@ -1,0 +1,9 @@
+
+import requests
+from bs4 import BeautifulSoup
+
+baseurl = 'https://www.si.umich.edu/programs/courses/catalog'
+header = {'User-Agent': 'SI_CLASS'}
+page_text = requests.get(baseurl, headers=header).text
+page_soup = BeautifulSoup(page_text, 'html.parser')
+print(page_soup)
