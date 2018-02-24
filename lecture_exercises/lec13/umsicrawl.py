@@ -1,9 +1,9 @@
 
 import requests
 from bs4 import BeautifulSoup
+import json
 
-
-
+# on startup, try to load the cache from file
 CACHE_FNAME = 'cache.json'
 try:
     cache_file = open(CACHE_FNAME, 'r')
@@ -15,18 +15,18 @@ try:
 except:
     CACHE_DICTION = {}
 
-# A helper function that accepts 2 parameters
-# and returns a string that uniquely represents the request
-# that could be made with this info (url + params)
-def get_unique_key(baseurl):
-    return baseurl
+
+def get_unique_key(url):
+  return url
 
 # The main cache function: it will always return the result for this
 # url+params combo. However, it will first look to see if we have already
 # cached the result and, if so, return the result from cache.
 # If we haven't cached the result, it will get a new one (and cache it)
-def make_request_using_cache(baseurl, params):
-    unique_ident = params_unique_combination(baseurl,params)
+
+def make_request_using_cache(url):
+    header = {'User-Agent': 'SI_CLASS'}
+    unique_ident = get_unique_key(url)
 
     ## first, look in the cache to see if we already have this data
     if unique_ident in CACHE_DICTION:
@@ -38,14 +38,13 @@ def make_request_using_cache(baseurl, params):
     else:
         print("Making a request for new data...")
         # Make the request and cache the new data
-        resp = requests.get(baseurl, params)
-        CACHE_DICTION[unique_ident] = json.loads(resp.text)
+        resp = requests.get(url, headers=header)
+        CACHE_DICTION[unique_ident] = resp.text
         dumped_json_cache = json.dumps(CACHE_DICTION)
         fw = open(CACHE_FNAME,"w")
         fw.write(dumped_json_cache)
         fw.close() # Close the open file
         return CACHE_DICTION[unique_ident]
-
 
 class CourseListing:
     def __init__(self, course_num, course_name):
@@ -53,43 +52,42 @@ class CourseListing:
         self.name = course_name
 
     def __str__(self):
-        str_ = self.num + ' ' + self.name + '\n\t'
-        return str_
+        return self.num + ': ' + self.name + '\n\t' + self.description
 
     def init_from_details_url(self, details_url):
-        global header
-        page_text = requests.get(details_url, headers=header).text
+        page_text = make_request_using_cache(details_url)
         page_soup = BeautifulSoup(page_text, 'html.parser')
-        #self.description = page_soup.find(class_='course2desc').text
+        desc_elem = page_soup.find(class_='course2desc')
+        self.description = desc_elem.text.strip()
 
 baseurl = 'https://www.si.umich.edu'
 catalog_url = baseurl + '/programs/courses/catalog'
-header = {'User-Agent': 'SI_CLASS'}
-page_text = requests.get(catalog_url, headers=header).text
+page_text = make_request_using_cache(catalog_url)
 page_soup = BeautifulSoup(page_text, 'html.parser')
-#print(page_soup)
 
 content_div = page_soup.find(class_='view-content')
-#print (len(content_div)) # to see if there's more than one
-view_content_section = page_soup.find(class_='view-content')
-table_rows = view_content_section.find_all('tr')
 
+table_rows = content_div.find_all('tr')
 course_listings = []
+# for tr in table_rows:
+for i in range(20):
+    tr = table_rows[i]
 
-for i in range(4):
-	row = table_rows[i]
-	cells = row.find_all('td')
-	if len(cells) == 2:
-		course_num = cells[0].text.strip()
-		course_name = cells[1].text.strip()
-		if course_name[-1] == ':':
-			course_name = course_name[:-1]
+    table_cells = tr.find_all('td')
+    if len(table_cells) == 2:
+        # extract info from this row
+        course_number = table_cells[0].text.strip()
+        course_name = table_cells[1].text.strip()
 
-		course_listing = CourseListing(course_num, course_name)
-		details_url = baseurl + cells[0].find('a')["href"]
-		course_listing.init_from_details_url(details_url)
-		course_listings.append(course_listing)
+
+        # crawl over to the details page
+        details_url_end = table_cells[0].find('a')['href']
+        details_url = baseurl + details_url_end
+        course_listing = CourseListing(course_number, course_name)
+        course_listing.init_from_details_url(details_url)
+        course_listings.append(course_listing)
+
 
 for cl in course_listings:
-	print(cl)
-
+    print(cl)
+    print('-' * 20)
