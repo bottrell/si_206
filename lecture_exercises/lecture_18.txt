@@ -1,0 +1,27 @@
+#SQL:
+
+to insert a specfic line into a dataset use the INSERT command:
+	''''INSERT INTO Instructors
+		VALUES (NULL, "Lampe", "Cliff", "lampecli", NULL)
+
+-"NULL" Specfies a field without any data, just empty
+- you can also specify the specific data that you want to enter
+	''''INSERT INTO Instructors (FirstName, LastName, Uniqname)
+		VALUES ("Cliff", "Lampe", "lampecli")
+
+- to delete records in a specific row we have to specify the table and criteria
+	''''DELETE FROM Instructors
+		WHERE LastName="Lampe"
+
+- careful that we don't use which will delete fucking everyting
+	''''DELETE FROM Instructors
+
+# Updates
+
+- updating will overwrite what is currently in the cell
+	''''UPDATE Instructors
+		SET Office = '4380'
+		WHERE LastName = 'Newman' and FirstName= 'Mark'
+
+
+
