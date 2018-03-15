@@ -46,3 +46,49 @@ if len(sys.argv) > 1 and sys.argv[1] == '--init':
     init_db()
 else:
     print('Leaving the DB alone.')
+
+
+def insert_stuff():
+    conn = sqlite3.connect('teaching.db')
+    cur = conn.cursor()
+
+    instructors = [['Mark', 'Newman', 'mwnewman', '4380 NQ'],
+                   ['Jackie', 'Cohen', 'jczetta', '3333 NQ'],
+                   ['Steven', 'Oney', 'soney', '4366 NQ']]
+
+    for inst in instructors:
+        insertion = (None, inst[0], inst[1], inst[2], inst[3])
+        statement = 'INSERT INTO "Instructors" '
+        statement += 'VALUES (?, ?, ?, ?, ?)'
+        cur.execute(statement, insertion)
+
+    conn.commit()
+    conn.close()
+
+
+
+def update_stuff():
+    conn = sqlite3.connect('teaching.db')
+    cur = conn.cursor()
+
+    new_office = '4445 NQ'
+    uniqname = 'mwnewman'
+    t = (new_office, uniqname)
+    statement = 'UPDATE Instructors '
+    statement += 'SET Office=? '
+    statement += 'WHERE Uniqname=?'
+    print(statement)
+    cur.execute(statement, t)
+
+    conn.commit()
+    conn.close()
+
+def delete_mark_newman():
+    conn = sqlite3.connect('teaching.db')
+    cur = conn.cursor()
+
+    statement = 'DELETE FROM Instructors'
+    statement += 'WHERE LastName="Newman"'
+    cur.execute(statement)
+    conn.commit()
+    conn.close()
