@@ -163,8 +163,26 @@ statement8 = '''SELECT Supplier.Country, COUNT(*)
 				ORDER BY COUNT(*) DESC '''
 
 
+#----------------GROUPING BY MULTIPLE COLUMNS ---------#
 
+''' SELECT LastName, ShipCountry, COUNT(*)
+	FROM SimpleOrder
+	GROUP BY LastName, ShipCountry
+	ORDER BY COUNT(*) DESC ''' 
 
+# PRACTICE 9 --- Count the number of orders each employee has
+# shipped to each country and print out the top 10 employee-> 
+# country combos along with the number of orders
+
+statement9 = '''SELECT LastName, ShipCountry, COUNT(*)
+				FROM [ORDER] as R
+					JOIN Employee
+					On R.EmployeeId = Emoloyee.Id
+				#separate different group columns w/commas
+				GROUP BY LastName, ShipCountry
+				ORDER BY COUNT(*) DESC
+				LIMIT 10
+			 '''
 
 
 
