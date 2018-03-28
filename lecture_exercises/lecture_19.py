@@ -138,7 +138,13 @@ statement7 = '''SELECT CompanyName, COUNT(*)
 	HAVING COUNT(*) >= 20
 	ORDER BY COUNT(*) DESC ''' 
 
-
+'''SELECT SupplierId, COUNT(*)
+FROM Supplier as S
+	JOIN Product
+	On S.Id = Product.Id
+HAVING COUNT(*) >= 5
+ORDER BY COUNT(*) DESC
+'''
 # This example doesnt use aggregates but rather returns those
 # whose shipping region ends with "Europe"
 
@@ -162,6 +168,8 @@ statement8 = '''SELECT Supplier.Country, COUNT(*)
 				HAVING COUNT(*) > 5
 				ORDER BY COUNT(*) DESC '''
 
+SELECT Customer.Region, COUNT(*)
+ORDER BY COUNT(*) DESC
 
 #----------------GROUPING BY MULTIPLE COLUMNS ---------#
 
