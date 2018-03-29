@@ -1,0 +1,100 @@
+Virtual environments
+----------------------
+> pip3 freeze
+	-- list of all moduals and versions that are installed
+
+calling "print sys.path()" will print out the directories that python searches for packages in.
+
+eventually you'll have a completely unique python environment, but that is bad since nobody else has the same environment as you. 
+
+The solution is virtual enviroments
+to start a virtual environment you can run:
+	> virtualenv environment_name
+this creates a sub-directory called environment_name
+
+Now we have to "activate" our virtual environment:
+	$ source environment_name/bin/activate
+
+Note that virtual environments exist on the OS level, not the python level. 
+if we call 
+	$ echo $PATH
+in a virtual environment vs a normal environment, we will see differences in sys.path().
+
+calling pip freeze in a virtual enviroment by default will show nothing because it starts us out from scrath. 
+
+calling $ deactivate will destroy the virtual environment
+
+
+FLASK
+-----------------------
+from flask import Flask
+app = Flask(__name__)
+    
+@app.route('/')
+def index():
+	return '<h1>Hello World!</h1>'
+    
+if __name__ == '__main__':
+	print('starting Flask app', app.name)
+	app.run(debug=True)
+
+
+ctrl+c will kill the flask app.
+hosted on localhost:5000 or 127.0.0.1:5000
+
+---------------------------------------------------------------------------------------------------
+
+Decorators
+A “decorator” is a function that “wraps” another function. Usually this is done to add some functionality to the “wrapped” function without changing it.
+
+The mechanisms for doing this are beyond the scope of this course (though I encourage you to look into it!), but the basis idea is this:
+
+Say I have a function:
+
+    def my_func():
+      print('hello')
+
+And I want to wrap it with a decorator, I can create another function that will do some stuff, then call my function, then maybe do some other stuff:
+
+
+    def my_func():    
+      print("hello")
+      
+    def my_decorator(dec_func):    
+      print('calling the func')    
+      dec_func()    
+      print('called the func')
+      
+    my_decorator(my_func)
+
+
+You’ll notice that I passed the name of my function `my_func` as an argument to the decorator `my_decorator`, and then (indirectly) called it from within `my_decorator`.
+
+The actual decorator pattern gets a little bit more complicated than this, but this is the basic idea.
+
+The decorator pattern turns out to be so useful that they are supported natively by Python using the `@` syntax. 
+
+So in this code:
+
+    @app.route('/')
+    def index():    
+        return '<h1>Hello World!</h1>'
+
+`app.route( )` is decorating `index( )`. In particular, it is mapping `index()` to the route `/`, which is the “root” of the web server (i.e., the page that you get if you don’t specify a page or a path).
+
+To see this in a bit more action, let’s add another route:
+
+    @app.route('/about')
+    def about():    
+        html = '''        
+          <h1>About this Site </h1>        
+          <p> This is my first ever Flask website! </p>      
+          <a href='/'> Go back home </a>    
+          '''    
+        return html
+
+
+---------------------------------------------------------------------------------------------------
+
+
+
